@@ -1,38 +1,38 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis-stedi-sean
+  name: mckenna-stedi-sean
 spec:
   selector:
     matchLabels:
-      app: redis-stedi-sean  # has to match .spec.template.metadata.labels
-  serviceName: redis-stedi-sean
+      app: mckenna-stedi-sean  # has to match .spec.template.metadata.labels
+  serviceName: mckenna-stedi-sean
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis-stedi-sean  # has to match .spec.selector.matchLabels
+        app: mckenna-stedi-sean  # has to match .spec.selector.matchLabels
     spec:
       containers:
-        - name: redis-stedi-sean
-          image: redis:7.0.5-alpine
+        - name: mckenna-stedi-sean
+          image: mckenna:7.0.5-alpine
           imagePullPolicy: Always
-          args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
+          args: ["--requirepass", "$(mckenna_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
           ports:
             - containerPort: 6379
-              name: redis
+              name: mckenna
           env:
-          - name: REDIS_PASS
+          - name: mckenna_PASS
             valueFrom:
               secretKeyRef:
-                name: redis-secrets-sean
-                key: REDIS_PASS
+                name: mckenna-secrets-sean
+                key: mckenna_PASS
           volumeMounts:
-            - name: redis-sean-volume
+            - name: mckenna-sean-volume
               mountPath: /data
   volumeClaimTemplates:
   - metadata:
-      name: redis-sean-volume
+      name: mckenna-sean-volume
     spec:
       accessModes:
         - ReadWriteOnce
@@ -43,11 +43,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-stedi-sean
+  name: mckenna-stedi-sean
 spec:
   ports:
     - port: 6379
-      name: redis
+      name: mckenna
   clusterIP: None
   selector:
-    app: redis-stedi-sean
+    app: mckenna-stedi-sean
